@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DL Barber Club — Painel Financeiro</title>
+<meta name="theme-color" content="#C9A96E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#C9A96E;
+    --gold-light:#E8C97A;
+    --bg:#0a0a0a;
+    --card:#171717;
+    --border:#262626;
+    --border-strong:#404040;
+    --text:#f5f5f5;
+    --muted:#a3a3a3;
+    --muted-2:#737373;
+    --green-bg:#052e16;
+    --green-text:#86efac;
+    --red:#f87171;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    min-height:100vh;
+  }
+  .font-display{font-family:'Playfair Display',serif;}
+  a{color:inherit;text-decoration:none;}
+
+  nav.topnav{
+    border-bottom:1px solid var(--border);
+    background:#000;
+    position:sticky;top:0;z-index:10;
+  }
+  .nav-inner{
+    max-width:1024px;margin:0 auto;padding:12px 16px;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:8px;
+  }
+  .brand{
+    font-family:'Playfair Display',serif;font-weight:700;
+    color:var(--gold);font-size:1.125rem;letter-spacing:.02em;
+    cursor:pointer;
+  }
+  .brand .sub{color:var(--muted-2);font-weight:400;font-size:.875rem;}
+  .nav-links{display:flex;gap:16px;font-size:.875rem;flex-wrap:wrap;}
+  .nav-links a{padding:4px 2px;cursor:pointer;color:var(--text);}
+  .nav-links a:hover, .nav-links a.active{color:var(--gold);}
+
+  main{max-width:1024px;margin:0 auto;padding:24px 16px;}
+  .stack{display:flex;flex-direction:column;gap:24px;}
+  .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted-2);margin:0 0 2px 0;}
+  h1{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin:0;}
+  h1 .accent{color:var(--gold);font-style:italic;}
+  h2{font-family:'Playfair Display',serif;font-size:1.125rem;font-weight:600;margin:0 0 12px 0;}
+  h2 .accent{color:var(--gold);}
+
+  .card{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:16px;
+  }
+  .grid{display:grid;gap:12px;}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  @media(min-width:768px){
+    .grid-4{grid-template-columns:repeat(4,1fr);}
+    .grid-2-md{grid-template-columns:repeat(2,1fr);}
+    .grid-4-md{grid-template-columns:repeat(4,1fr);}
+  }
+  .grid-2-md{grid-template-columns:1fr;}
+  label{display:block;font-size:.75rem;color:var(--muted);margin-bottom:4px;}
+  .input, select.input, input.input{
+    background:var(--card);border:1px solid var(--border-strong);
+    border-radius:8px;padding:8px 12px;width:100%;color:var(--text);
+    font-family:inherit;font-size:.875rem;
+  }
+  .input:focus{outline:none;border-color:var(--gold);}
+  .btn{
+    background:var(--gold);color:#000;font-weight:600;
+    padding:8px 16px;border-radius:8px;border:none;cursor:pointer;
+    font-family:inherit;font-size:.875rem;transition:opacity .15s;
+  }
+  .btn:hover{opacity:.9;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-sm{padding:4px 8px;font-size:.75rem;border-radius:6px;background:var(--border);color:var(--muted);border:none;cursor:pointer;font-family:inherit;}
+  .btn-sm:hover{background:var(--border-strong);}
+  .link-danger{color:var(--red);font-size:.75rem;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;}
+  .link-danger:hover{text-decoration:underline;}
+
+  table.tbl{width:100%;border-collapse:collapse;font-size:.875rem;}
+  table.tbl th, table.tbl td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+  table.tbl th{color:var(--muted);font-weight:500;}
+  .text-right{text-align:right;}
+  .muted{color:var(--muted);font-size:.875rem;}
+  .muted-xs{color:var(--muted-2);font-size:.75rem;}
+  .gold{color:var(--gold);}
+  .gold-medium{color:var(--gold);font-weight:500;}
+  .red{color:var(--red);}
+  .bold{font-weight:700;}
+  .flex{display:flex;}
+  .flex-wrap{flex-wrap:wrap;}
+  .gap-2{gap:8px;}
+  .gap-3{gap:12px;}
+  .items-end{align-items:flex-end;}
+  .pt-border{border-top:1px solid var(--border);padding-top:16px;margin-top:16px;}
+  .pill{font-size:.75rem;padding:4px 8px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;}
+  .pill.on{background:var(--green-bg);color:var(--green-text);}
+  .pill.off{background:var(--border);color:var(--muted);}
+  .overflow-x{overflow-x:auto;}
+  .w-full{width:100%;}
+  .col-span-2{grid-column:span 2;}
+  @media(min-width:768px){ .col-span-4-md{grid-column:span 4;} }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <div class="brand" onclick="navigate('dashboard')">DL BARBER CLUB <span class="sub">· Financeiro</span></div>
+    <div class="nav-links" id="navLinks">
+      <a data-page="dashboard" onclick="navigate('dashboard')">Dashboard</a>
+      <a data-page="vendas" onclick="navigate('vendas')">Vendas</a>
+      <a data-page="produtos" onclick="navigate('produtos')">Produtos</a>
+      <a data-page="saidas" onclick="navigate('saidas')">Saídas</a>
+      <a data-page="barbeiros" onclick="navigate('barbeiros')">Barbeiros</a>
+    </div>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<script>
+/* ==========================================================
+   DL Barber Club — Painel Financeiro (versão estática)
+   Roda 100% no navegador (Live Server ou até abrindo o
+   arquivo direto). Dados ficam salvos no localStorage deste
+   navegador/computador — não é um banco compartilhado como
+   na versão Vercel/Postgres.
+   ========================================================== */
+
+const PERCENTUAL_COMISSAO_BARBEIRO = 0.5;
+
+/* ---------- estado / persistência ---------- */
+function load(key, def){
+  try{ const v = JSON.parse(localStorage.getItem(key)); return v ?? def; }
+  catch(e){ return def; }
+}
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+let barbeiros = load('dlb_barbeiros', []);
+let produtos  = load('dlb_produtos', []);
+let vendas    = load('dlb_vendas', []);
+let saidas    = load('dlb_saidas', []);
+
+function persist(){
+  save('dlb_barbeiros', barbeiros);
+  save('dlb_produtos', produtos);
+  save('dlb_vendas', vendas);
+  save('dlb_saidas', saidas);
+}
+
+function nextId(arr){ return arr.length ? Math.max(...arr.map(x => x.id)) + 1 : 1; }
+
+/* ---------- helpers ---------- */
+function hoje(){ return new Date().toISOString().slice(0,10); }
+function segundaFeiraDestaSemana(){
+  const d = new Date();
+  const dia = d.getDay();
+  const diff = dia === 0 ? -6 : 1 - dia;
+  const seg = new Date(d);
+  seg.setDate(d.getDate() + diff);
+  return seg.toISOString().slice(0,10);
+}
+function fmt(v){
+  return Number(v || 0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+}
+function fmtData(iso){
+  return new Date(iso + 'T00:00:00').toLocaleDateString('pt-BR');
+}
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------- roteamento simples por hash ---------- */
+function currentPage(){
+  const h = location.hash.replace('#/', '').split('?')[0];
+  return h || 'dashboard';
+}
+window.addEventListener('hashchange', render);
+function navigate(page){ location.hash = '#/' + page; }
+
+/* ================= DASHBOARD ================= */
+let dashInicio = segundaFeiraDestaSemana();
+let dashFim = hoje();
+
+function renderDashboard(){
+  const vendasPeriodo = vendas.filter(v => v.data >= dashInicio && v.data <= dashFim);
+  const saidasPeriodo = saidas.filter(s => s.data >= dashInicio && s.data <= dashFim);
+
+  const totalServicos = vendasPeriodo.reduce((a, v) => a + v.total_servicos, 0);
+  const totalProdutos = vendasPeriodo.reduce((a, v) => a + v.total_produtos, 0);
+  const totalFaturado = totalServicos + totalProdutos;
+  const totalComissoes = vendasPeriodo.reduce((a, v) => a + v.comissao_barbeiro, 0);
+  const totalSaidas = saidasPeriodo.reduce((a, s) => a + Number(s.valor), 0);
+  const parteBarbearia = totalFaturado - totalComissoes;
+  const saldoLiquido = parteBarbearia - totalSaidas;
+  const totalCortes = vendasPeriodo.reduce((a, v) => a + v.itens.filter(i => i.tipo === 'servico').length, 0);
+
+  const porBarbeiro = {};
+  for (const v of vendasPeriodo){
+    if (!porBarbeiro[v.barbeiro_nome]) porBarbeiro[v.barbeiro_nome] = { faturado:0, comissao:0, atendimentos:0 };
+    porBarbeiro[v.barbeiro_nome].faturado += v.total_geral;
+    porBarbeiro[v.barbeiro_nome].comissao += v.comissao_barbeiro;
+    porBarbeiro[v.barbeiro_nome].atendimentos += 1;
+  }
+  const listaBarbeiro = Object.entries(porBarbeiro).sort((a,b) => b[1].faturado - a[1].faturado);
+
+  const porProduto = {};
+  for (const v of vendasPeriodo){
+    for (const i of v.itens){
+      if (i.tipo !== 'produto') continue;
+      if (!porProduto[i.nome]) porProduto[i.nome] = { quantidade:0, total:0 };
+      porProduto[i.nome].quantidade += i.quantidade;
+      porProduto[i.nome].total += i.quantidade * i.valor_unitario;
+    }
+  }
+  const listaProduto = Object.entries(porProduto).sort((a,b) => b[1].quantidade - a[1].quantidade);
+
+  document.getElementById('app').innerHTML = `
+    <div class="stack">
+      <div>
+        <p class="eyebrow">Painel Profissional</p>
+        <h1>Fechamento <span class="accent">da Semana</span></h1>
+      </div>
+
+      <div class="flex flex-wrap gap-3 items-end">
+        <div>
+          <label>De</label>
+          <input type="date" class="input" id="dashInicio" value="${dashInicio}">
+        </div>
+        <div>
+          <label>Até</label>
+          <input type="date" class="input" id="dashFim" value="${dashFim}">
+        </div>
+        <p class="muted-xs" style="padding-bottom:8px;">Já vem com a semana atual (segunda até hoje) selecionada.</p>
+      </div>
+
+      <div class="grid grid-4">
+        <div class="card">
+          <p class="muted-xs">Faturamento total</p>
+          <p class="bold gold" style="font-size:1.25rem;">${fmt(totalFaturado)}</p>
+          <p class="muted-xs" style="margin-top:4px;">${totalCortes} cortes · ${fmt(totalProdutos)} em produtos</p>
+        </div>
+        <div class="card">
+          <p class="muted-xs">Comissões (barbeiros)</p>
+          <p class="bold" style="font-size:1.25rem;">${fmt(totalComissoes)}</p>
+        </div>
+        <div class="card">
+          <p class="muted-xs">Saídas / despesas</p>
+          <p class="bold red" style="font-size:1.25rem;">${fmt(totalSaidas)}</p>
+        </div>
+        <div class="card">
+          <p class="muted-xs">Saldo líquido da barbearia</p>
+          <p class="bold" style="font-size:1.25rem;color:${saldoLiquido >= 0 ? '#4ade80' : 'var(--red)'};">${fmt(saldoLiquido)}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2-md">
+        <div class="card">
+          <h2>Comissões por <span class="accent">barbeiro</span></h2>
+          ${listaBarbeiro.length === 0 ? '<p class="muted">Nenhum atendimento no período.</p>' : `
+          <div class="overflow-x">
+          <table class="tbl">
+            <thead><tr><th>Barbeiro</th><th>Atend.</th><th>Faturado</th><th>Comissão</th></tr></thead>
+            <tbody>
+              ${listaBarbeiro.map(([nome, d]) => `
+                <tr>
+                  <td>${esc(nome)}</td>
+                  <td>${d.atendimentos}</td>
+                  <td>${fmt(d.faturado)}</td>
+                  <td class="gold-medium">${fmt(d.comissao)}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+          </div>`}
+        </div>
+
+        <div class="card">
+          <h2>Produtos <span class="accent">vendidos</span></h2>
+          ${listaProduto.length === 0 ? '<p class="muted">Nenhum produto vendido no período.</p>' : `
+          <div class="overflow-x">
+          <table class="tbl">
+            <thead><tr><th>Produto</th><th>Qtd.</th><th>Total</th></tr></thead>
+            <tbody>
+              ${listaProduto.map(([nome, d]) => `
+                <tr>
+                  <td>${esc(nome)}</td>
+                  <td style="font-weight:500;">${d.quantidade}</td>
+                  <td>${fmt(d.total)}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+          </div>`}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('dashInicio').addEventListener('change', e => { dashInicio = e.target.value; renderDashboard(); });
+  document.getElementById('dashFim').addEventListener('change', e => { dashFim = e.target.value; renderDashboard(); });
+}
+
+/* ================= VENDAS ================= */
+let carrinho = [];
+let vForm = { data: hoje(), barbeiroId: '', formaPagamento: 'Dinheiro' };
+let servicoNome = 'Corte', servicoValor = '';
+let produtoSelecionado = '', produtoQtd = '1';
+
+function renderVendas(){
+  const totalCarrinho = carrinho.reduce((a, i) => a + i.quantidade * i.valor_unitario, 0);
+  const vendasOrdenadas = [...vendas].sort((a,b) => b.id - a.id);
+
+  document.getElementById('app').innerHTML = `
+    <div class="stack">
+      <div>
+        <p class="eyebrow">Painel Profissional</p>
+        <h1>Registrar <span class="accent">Venda</span></h1>
+      </div>
+
+      <div class="card stack" style="gap:16px;">
+        <div class="grid" style="grid-template-columns:repeat(2,1fr);" id="vendaTopoGrid">
+          <div>
+            <label>Data</label>
+            <input type="date" class="input" id="vData" value="${vForm.data}">
+          </div>
+          <div>
+            <label>Barbeiro</label>
+            <select class="input" id="vBarbeiro">
+              <option value="">Selecione</option>
+              ${barbeiros.filter(b => b.ativo).map(b => `<option value="${b.id}" ${String(b.id)===String(vForm.barbeiroId)?'selected':''}>${esc(b.nome)}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label>Pagamento</label>
+            <select class="input" id="vPagamento">
+              ${['Dinheiro','Pix','Débito','Crédito'].map(p => `<option ${p===vForm.formaPagamento?'selected':''}>${p}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-border grid grid-2-md">
+          <div>
+            <p class="gold" style="font-size:.875rem;font-weight:600;margin-bottom:8px;">+ Serviço (corte, barba...)</p>
+            <div class="flex gap-2">
+              <input class="input" id="servicoNome" placeholder="Nome do serviço" value="${esc(servicoNome)}">
+              <input type="number" step="0.01" class="input" style="width:110px;" id="servicoValor" placeholder="R$" value="${esc(servicoValor)}">
+              <button class="btn" style="white-space:nowrap;" id="btnAddServico">Add</button>
+            </div>
+          </div>
+          <div>
+            <p class="gold" style="font-size:.875rem;font-weight:600;margin-bottom:8px;">+ Produto (bebida, pomada...)</p>
+            <div class="flex gap-2">
+              <select class="input" id="produtoSelect">
+                <option value="">Selecione</option>
+                ${produtos.filter(p => p.ativo).map(p => `<option value="${p.id}" ${String(p.id)===String(produtoSelecionado)?'selected':''}>${esc(p.nome)} — ${fmt(p.preco)} (estoque: ${p.estoque})</option>`).join('')}
+              </select>
+              <input type="number" min="1" class="input" style="width:64px;" id="produtoQtd" value="${esc(produtoQtd)}">
+              <button class="btn" style="white-space:nowrap;" id="btnAddProduto">Add</button>
+            </div>
+          </div>
+        </div>
+
+        ${carrinho.length > 0 ? `
+        <div class="pt-border">
+          <div class="overflow-x">
+          <table class="tbl">
+            <thead><tr><th>Item</th><th>Qtd</th><th>Valor</th><th></th></tr></thead>
+            <tbody>
+              ${carrinho.map((item, i) => `
+                <tr>
+                  <td>${esc(item.nome)} <span class="muted-xs">(${item.tipo === 'servico' ? 'serviço' : 'produto'})</span></td>
+                  <td>${item.quantidade}</td>
+                  <td>${fmt(item.quantidade * item.valor_unitario)}</td>
+                  <td class="text-right"><button class="link-danger" onclick="removerItemCarrinho(${i})">remover</button></td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+          </div>
+          <p class="text-right bold" style="margin-top:8px;">Total: <span class="gold">${fmt(totalCarrinho)}</span></p>
+        </div>` : ''}
+
+        <button class="btn w-full" id="btnFinalizar">Finalizar venda</button>
+      </div>
+
+      <div class="card overflow-x">
+        <h2>Últimas vendas</h2>
+        <table class="tbl">
+          <thead>
+            <tr><th>Data</th><th>Barbeiro</th><th>Itens</th><th>Total</th><th>Comissão</th><th>Pagamento</th><th></th></tr>
+          </thead>
+          <tbody>
+            ${vendasOrdenadas.map(v => `
+              <tr>
+                <td>${fmtData(v.data)}</td>
+                <td>${esc(v.barbeiro_nome)}</td>
+                <td class="muted-xs">${v.itens.map(i => `${i.quantidade}x ${esc(i.nome)}`).join(', ')}</td>
+                <td>${fmt(v.total_geral)}</td>
+                <td class="gold">${fmt(v.comissao_barbeiro)}</td>
+                <td>${v.forma_pagamento}</td>
+                <td class="text-right"><button class="link-danger" onclick="excluirVenda(${v.id})">excluir</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('vData').addEventListener('change', e => vForm.data = e.target.value);
+  document.getElementById('vBarbeiro').addEventListener('change', e => vForm.barbeiroId = e.target.value);
+  document.getElementById('vPagamento').addEventListener('change', e => vForm.formaPagamento = e.target.value);
+  document.getElementById('servicoNome').addEventListener('input', e => servicoNome = e.target.value);
+  document.getElementById('servicoValor').addEventListener('input', e => servicoValor = e.target.value);
+  document.getElementById('produtoSelect').addEventListener('change', e => produtoSelecionado = e.target.value);
+  document.getElementById('produtoQtd').addEventListener('input', e => produtoQtd = e.target.value);
+  document.getElementById('btnAddServico').addEventListener('click', adicionarServico);
+  document.getElementById('btnAddProduto').addEventListener('click', adicionarProduto);
+  document.getElementById('btnFinalizar').addEventListener('click', finalizarVenda);
+}
+
+function adicionarServico(){
+  if (!servicoNome.trim() || !servicoValor){ alert('Preencha o nome e o valor do serviço.'); return; }
+  carrinho.push({ tipo:'servico', nome: servicoNome.trim(), quantidade:1, valor_unitario: Number(servicoValor) });
+  servicoValor = '';
+  renderVendas();
+}
+function adicionarProduto(){
+  const p = produtos.find(p => p.id === Number(produtoSelecionado));
+  if (!p){ alert('Selecione um produto.'); return; }
+  const qtd = Number(produtoQtd) || 1;
+  carrinho.push({ tipo:'produto', produto_id: p.id, nome: p.nome, quantidade: qtd, valor_unitario: Number(p.preco) });
+  produtoSelecionado = ''; produtoQtd = '1';
+  renderVendas();
+}
+function removerItemCarrinho(i){ carrinho.splice(i,1); renderVendas(); }
+
+function finalizarVenda(){
+  if (!vForm.barbeiroId){ alert('Selecione o barbeiro.'); return; }
+  if (carrinho.length === 0){ alert('Adicione ao menos um serviço ou produto.'); return; }
+
+  const barbeiro = barbeiros.find(b => b.id === Number(vForm.barbeiroId));
+  const totalServicos = carrinho.filter(i => i.tipo === 'servico').reduce((a,i) => a + i.quantidade * i.valor_unitario, 0);
+  const totalProdutos = carrinho.filter(i => i.tipo === 'produto').reduce((a,i) => a + i.quantidade * i.valor_unitario, 0);
+
+  // baixa de estoque
+  for (const item of carrinho){
+    if (item.tipo === 'produto'){
+      const p = produtos.find(p => p.id === item.produto_id);
+      if (p) p.estoque = Math.max(0, p.estoque - item.quantidade);
+    }
+  }
+
+  const venda = {
+    id: nextId(vendas),
+    data: vForm.data,
+    barbeiro_id: Number(vForm.barbeiroId),
+    barbeiro_nome: barbeiro ? barbeiro.nome : '',
+    forma_pagamento: vForm.formaPagamento,
+    itens: carrinho.map(i => ({ tipo:i.tipo, produto_id:i.produto_id, nome:i.nome, quantidade:i.quantidade, valor_unitario:i.valor_unitario, valor_total: i.quantidade * i.valor_unitario })),
+    total_servicos: totalServicos,
+    total_produtos: totalProdutos,
+    total_geral: totalServicos + totalProdutos,
+    comissao_barbeiro: totalServicos * PERCENTUAL_COMISSAO_BARBEIRO,
+  };
+  vendas.push(venda);
+  carrinho = [];
+  persist();
+  renderVendas();
+}
+
+function excluirVenda(id){
+  if (!confirm('Excluir esta venda? O estoque dos produtos será devolvido.')) return;
+  const venda = vendas.find(v => v.id === id);
+  if (venda){
+    for (const item of venda.itens){
+      if (item.tipo === 'produto'){
+        const p = produtos.find(p => p.id === item.produto_id);
+        if (p) p.estoque += item.quantidade;
+      }
+    }
+  }
+  vendas = vendas.filter(v => v.id !== id);
+  persist();
+  renderVendas();
+}
+
+/* ================= PRODUTOS ================= */
+let pForm = { nome:'', preco:'', estoque:'' };
+let pAjustes = {};
+
+function renderProdutos(){
+  document.getElementById('app').innerHTML = `
+    <div class="stack">
+      <div>
+        <p class="eyebrow">Painel Profissional</p>
+        <h1>Produtos <span class="accent">& Estoque</span></h1>
+      </div>
+
+      <div class="card grid grid-4-md items-end" style="grid-template-columns:repeat(2,1fr);">
+        <div class="col-span-2">
+          <label>Produto</label>
+          <input class="input" id="pNome" placeholder="Ex: Coca-Cola lata" value="${esc(pForm.nome)}">
+        </div>
+        <div>
+          <label>Preço de venda (R$)</label>
+          <input type="number" step="0.01" class="input" id="pPreco" value="${esc(pForm.preco)}">
+        </div>
+        <div>
+          <label>Estoque inicial</label>
+          <input type="number" class="input" id="pEstoque" value="${esc(pForm.estoque)}">
+        </div>
+        <div class="col-span-2 col-span-4-md">
+          <button class="btn" id="btnAddProdutoCad">Cadastrar produto</button>
+        </div>
+      </div>
+
+      <div class="card overflow-x">
+        <table class="tbl">
+          <thead><tr><th>Produto</th><th>Preço</th><th>Estoque</th><th>Repor / ajustar</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            ${produtos.map(p => `
+              <tr>
+                <td>${esc(p.nome)}</td>
+                <td>${fmt(p.preco)}</td>
+                <td class="${p.estoque <= 3 ? 'red bold' : ''}">${p.estoque}</td>
+                <td>
+                  <div class="flex gap-2" style="gap:4px;">
+                    <input type="number" placeholder="+12 ou -1" class="input" style="width:96px;font-size:.75rem;" id="ajuste_${p.id}" value="${esc(pAjustes[p.id] || '')}">
+                    <button class="btn-sm" onclick="aplicarAjuste(${p.id})">OK</button>
+                  </div>
+                </td>
+                <td><button class="pill ${p.ativo ? 'on':'off'}" onclick="alternarAtivoProduto(${p.id})">${p.ativo ? 'Ativo':'Inativo'}</button></td>
+                <td class="text-right"><button class="link-danger" onclick="excluirProduto(${p.id})">excluir</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+        ${produtos.some(p => p.estoque <= 3) ? '<p class="muted-xs red" style="margin-top:8px;">⚠ Produtos em vermelho estão com estoque baixo (3 ou menos).</p>' : ''}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('pNome').addEventListener('input', e => pForm.nome = e.target.value);
+  document.getElementById('pPreco').addEventListener('input', e => pForm.preco = e.target.value);
+  document.getElementById('pEstoque').addEventListener('input', e => pForm.estoque = e.target.value);
+  document.getElementById('btnAddProdutoCad').addEventListener('click', adicionarProdutoCad);
+  produtos.forEach(p => {
+    const el = document.getElementById('ajuste_' + p.id);
+    if (el) el.addEventListener('input', e => pAjustes[p.id] = e.target.value);
+  });
+}
+
+function adicionarProdutoCad(){
+  if (!pForm.nome.trim() || !pForm.preco){ alert('Preencha nome e preço.'); return; }
+  produtos.push({ id: nextId(produtos), nome: pForm.nome.trim(), preco: Number(pForm.preco), estoque: Number(pForm.estoque || 0), ativo:true });
+  pForm = { nome:'', preco:'', estoque:'' };
+  persist();
+  renderProdutos();
+}
+function aplicarAjuste(id){
+  const valor = Number(pAjustes[id]);
+  if (!valor) return;
+  const p = produtos.find(p => p.id === id);
+  if (p) p.estoque = Math.max(0, p.estoque + valor);
+  pAjustes[id] = '';
+  persist();
+  renderProdutos();
+}
+function alternarAtivoProduto(id){
+  const p = produtos.find(p => p.id === id);
+  if (p) p.ativo = !p.ativo;
+  persist();
+  renderProdutos();
+}
+function excluirProduto(id){
+  if (!confirm('Excluir este produto?')) return;
+  produtos = produtos.filter(p => p.id !== id);
+  persist();
+  renderProdutos();
+}
+
+/* ================= SAÍDAS ================= */
+const CATEGORIAS = ['Aluguel', 'Produtos', 'Contas (água/luz/internet)', 'Manutenção', 'Marketing', 'Outros'];
+let sForm = { data: hoje(), descricao:'', categoria:'Outros', valor:'' };
+
+function renderSaidas(){
+  const saidasOrdenadas = [...saidas].sort((a,b) => b.id - a.id);
+  document.getElementById('app').innerHTML = `
+    <div class="stack">
+      <div>
+        <p class="eyebrow">Painel Profissional</p>
+        <h1>Controle de <span class="accent">Despesas</span></h1>
+      </div>
+
+      <div class="card grid grid-4-md items-end" style="grid-template-columns:repeat(2,1fr);">
+        <div>
+          <label>Data</label>
+          <input type="date" class="input" id="sData" value="${sForm.data}">
+        </div>
+        <div>
+          <label>Descrição</label>
+          <input class="input" id="sDescricao" placeholder="Ex: compra de shampoo" value="${esc(sForm.descricao)}">
+        </div>
+        <div>
+          <label>Categoria</label>
+          <select class="input" id="sCategoria">
+            ${CATEGORIAS.map(c => `<option ${c===sForm.categoria?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label>Valor (R$)</label>
+          <input type="number" step="0.01" class="input" id="sValor" value="${esc(sForm.valor)}">
+        </div>
+        <div class="col-span-2 col-span-4-md">
+          <button class="btn" id="btnSalvarSaida">Lançar saída</button>
+        </div>
+      </div>
+
+      <div class="card overflow-x">
+        <table class="tbl">
+          <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead>
+          <tbody>
+            ${saidasOrdenadas.map(s => `
+              <tr>
+                <td>${fmtData(s.data)}</td>
+                <td>${esc(s.descricao)}</td>
+                <td>${esc(s.categoria)}</td>
+                <td class="red">${fmt(s.valor)}</td>
+                <td class="text-right"><button class="link-danger" onclick="excluirSaida(${s.id})">excluir</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('sData').addEventListener('input', e => sForm.data = e.target.value);
+  document.getElementById('sDescricao').addEventListener('input', e => sForm.descricao = e.target.value);
+  document.getElementById('sCategoria').addEventListener('change', e => sForm.categoria = e.target.value);
+  document.getElementById('sValor').addEventListener('input', e => sForm.valor = e.target.value);
+  document.getElementById('btnSalvarSaida').addEventListener('click', salvarSaida);
+}
+
+function salvarSaida(){
+  if (!sForm.descricao || !sForm.valor){ alert('Preencha a descrição e o valor.'); return; }
+  saidas.push({ id: nextId(saidas), data: sForm.data, descricao: sForm.descricao, categoria: sForm.categoria, valor: Number(sForm.valor) });
+  sForm = { ...sForm, descricao:'', valor:'' };
+  persist();
+  renderSaidas();
+}
+function excluirSaida(id){
+  if (!confirm('Excluir esta saída?')) return;
+  saidas = saidas.filter(s => s.id !== id);
+  persist();
+  renderSaidas();
+}
+
+/* ================= BARBEIROS ================= */
+let bNome = '';
+
+function renderBarbeiros(){
+  document.getElementById('app').innerHTML = `
+    <div class="stack">
+      <div>
+        <p class="eyebrow">Painel Profissional</p>
+        <h1>Nossos <span class="accent">Barbeiros</span></h1>
+      </div>
+
+      <div class="card flex gap-2">
+        <input class="input" id="bNomeInput" placeholder="Nome do barbeiro" value="${esc(bNome)}">
+        <button class="btn" style="white-space:nowrap;" id="btnAddBarbeiro">Adicionar</button>
+      </div>
+
+      <div class="card overflow-x">
+        <table class="tbl">
+          <thead><tr><th>Nome</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            ${barbeiros.map(b => `
+              <tr>
+                <td>${esc(b.nome)}</td>
+                <td><button class="pill ${b.ativo ? 'on':'off'}" onclick="alternarAtivoBarbeiro(${b.id})">${b.ativo ? 'Ativo':'Inativo'}</button></td>
+                <td class="text-right"><button class="link-danger" onclick="excluirBarbeiro(${b.id})">excluir</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  const input = document.getElementById('bNomeInput');
+  input.addEventListener('input', e => bNome = e.target.value);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') adicionarBarbeiro(); });
+  document.getElementById('btnAddBarbeiro').addEventListener('click', adicionarBarbeiro);
+}
+
+function adicionarBarbeiro(){
+  if (!bNome.trim()) return;
+  barbeiros.push({ id: nextId(barbeiros), nome: bNome.trim(), ativo:true });
+  bNome = '';
+  persist();
+  renderBarbeiros();
+}
+function alternarAtivoBarbeiro(id){
+  const b = barbeiros.find(b => b.id === id);
+  if (b) b.ativo = !b.ativo;
+  persist();
+  renderBarbeiros();
+}
+function excluirBarbeiro(id){
+  if (!confirm('Excluir este barbeiro? Isso não apaga o histórico de vendas já lançadas.')) return;
+  barbeiros = barbeiros.filter(b => b.id !== id);
+  persist();
+  renderBarbeiros();
+}
+
+/* ================= ROTEADOR PRINCIPAL ================= */
+const PAGES = {
+  dashboard: renderDashboard,
+  vendas: renderVendas,
+  produtos: renderProdutos,
+  saidas: renderSaidas,
+  barbeiros: renderBarbeiros,
+};
+
+function render(){
+  const page = currentPage();
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+  (PAGES[page] || renderDashboard)();
+}
+
+render();
+</script>
+</body>
+</html>
